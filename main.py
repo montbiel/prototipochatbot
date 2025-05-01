@@ -79,7 +79,7 @@ def processar_opcao(opcao):
         mensagens.append({"role": "assistant", "content": mensagem_inicial})
         return mensagem_inicial, None, "humano"
     elif opcao == "0":
-        print(f"{Fore.CYAN}Obrigado por utilizar nosso serviço. Até logo!{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}O financeiro agradece seu contato, Até logo!{Style.RESET_ALL}")
         exit()
     else:
         return "Opção inválida. Por favor, escolha uma das opções disponíveis (1, 2 ou 3).", None, "principal"
@@ -181,7 +181,7 @@ if __name__ == "__main__":
                 mostrar_menu_boleto()
                 estado_atual = "boleto"
             elif "Tenha um bom dia" in resposta:
-                print(f"{Fore.CYAN}Obrigado por utilizar nosso serviço. Até logo!{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}O financeiro agradece seu contato, Até logo!{Style.RESET_ALL}")
                 exit()
             continue
         
