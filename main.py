@@ -181,8 +181,8 @@ if __name__ == "__main__":
                 mostrar_menu_boleto()
                 estado_atual = "boleto"
             elif "Tenha um bom dia" in resposta:
-                mostrar_menu_boleto()
-                estado_atual = "boleto"
+                print(f"{Fore.CYAN}Obrigado por utilizar nosso serviço. Até logo!{Style.RESET_ALL}")
+                exit()
             continue
         
         # Se estiver no estado de reparcelamento
