@@ -83,7 +83,3 @@ O chatbot opera em diferentes estados para melhor gerenciamento do fluxo:
 - `consulta_boletos`: Consulta e visualização de boletos
 - `reparcelamento`: Processo de reparcelamento
 - `humano`: Atendimento com humano
-
-## Contribuição
-
-Contribuições são bem-vindas! Por favor, abra uma issue para discutir mudanças ou melhorias. 
