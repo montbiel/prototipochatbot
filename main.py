@@ -7,7 +7,7 @@ from reparcelamento_handler import (
     processar_confirmacao_reparcelamento,
     processar_ajuste_reparcelamento
 )
-from database import armazenar_previsao
+from database import armazenar_previsao, gerar_numero_boletos, calcular_valor_total
 from utils import normalizar_resposta, simular_transferencia
 from intent_handler import detectar_intencao_reparcelamento, detectar_voltar_menu
 import time
@@ -89,9 +89,16 @@ def processar_opcao_menu_boleto(opcao):
         mensagem, valor_total, contexto = processar_consulta_boletos()
         return mensagem, valor_total, "consulta_boletos"
     elif opcao == "2":
-        return "Ótima escolha! Vamos encontrar a melhor solução para você. " \
-               "Qual número de parcelas seria mais adequado para sua situação? " \
-               "(Por favor, informe um número entre 2 e 12)", None, "reparcelamento"
+        # Consulta os boletos antes de oferecer reparcelamento
+        numero_boletos = gerar_numero_boletos()
+        valor_total, boletos = calcular_valor_total(numero_boletos)
+        
+        if numero_boletos == 1:
+            mensagem = f"Você tem apenas 1 boleto em aberto no valor de R$ {valor_total:.2f}. Não é possível realizar o reparcelamento para um único boleto. Deseja receber este boleto atualizado? (sim/não)"
+            return mensagem, valor_total, "consulta_boletos"
+        else:
+            mensagem = f"Você tem {numero_boletos} boletos em aberto, totalizando R$ {valor_total:.2f}.\n\nÓtimo! Vamos encontrar a melhor solução para você. Qual número de parcelas seria mais adequado para sua situação? (Por favor, informe um número entre 2 e 12)"
+            return mensagem, valor_total, "reparcelamento"
     elif opcao == "0":
         mostrar_menu_principal()
         return None, None, "principal"
@@ -127,12 +134,21 @@ if __name__ == "__main__":
                 estado_atual = "boleto"
                 continue
             else:
-                resposta = "Ótima escolha! Vamos encontrar a melhor solução para você. " \
-                          "Qual número de parcelas seria mais adequado para sua situação? " \
-                          "(Por favor, informe um número entre 2 e 12)"
-                print(f"{Fore.YELLOW}Bot: {resposta}{Style.RESET_ALL}")
-                ultima_mensagem = resposta
-                estado_atual = "reparcelamento"
+                # Consulta os boletos antes de oferecer reparcelamento
+                numero_boletos = gerar_numero_boletos()
+                valor_total, boletos = calcular_valor_total(numero_boletos)
+                
+                if numero_boletos == 1:
+                    resposta = f"Você tem apenas 1 boleto em aberto no valor de R$ {valor_total:.2f}. Não é possível realizar o reparcelamento para um único boleto. Deseja receber este boleto atualizado? (sim/não)"
+                    print(f"{Fore.YELLOW}Bot: {resposta}{Style.RESET_ALL}")
+                    ultima_mensagem = resposta
+                    estado_atual = "consulta_boletos"
+                else:
+                    resposta = f"Você tem {numero_boletos} boletos em aberto, totalizando R$ {valor_total:.2f}.\n\nÓtimo! Vamos encontrar a melhor solução para você. Qual número de parcelas seria mais adequado para sua situação? (Por favor, informe um número entre 2 e 12)"
+                    print(f"{Fore.YELLOW}Bot: {resposta}{Style.RESET_ALL}")
+                    ultima_mensagem = resposta
+                    estado_atual = "reparcelamento"
+                    valor_total_boletos = valor_total
                 continue
         
         # Se estiver no menu principal
